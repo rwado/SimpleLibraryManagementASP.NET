@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Library_Management.Models.Book>
+
+
+@{
+    ViewBag.Title = "Book List";
+}
+
+<h2>Book List</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParam })
+        </th>
+        <th>
+            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParam })
+        </th>
+        <th>
+            Status
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @if (item.UserId == null)
+                {
+                    <p>Available</p>
+                }
+                else
+                {
+                    <p>Rented by <br />@item.ApplicationUser.Email</p>
+                }
+            </td>
+            <td>
+                @if (item.UserId == null)
+                {
+                    @Html.ActionLink("Borrow", "Borrow", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+                }
+                else
+                {
+                    @Html.ActionLink("Return", "Return", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>

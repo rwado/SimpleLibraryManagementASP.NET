@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Library_Management.Models.Book>
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Books in Library - Admin Panel";
+}
+
+<h2>Books in Library - Admin Panel</h2>
+
+<p>
+    @Html.ActionLink("Create New Book", "Create", "Books", null, new { @class = "btn btn-default" })
+</p>
+@using (Html.BeginForm())
+{
+    <p>
+        <button id="SearchString " name="SearchString" type="submit" value="Available">Available</button>
+        <button id="SearchString " name="SearchString" type="submit" value="Rented">Rented</button>
+        <input type="submit" value="All" />
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParam })
+        </th>
+        <th>
+            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParam })
+        </th>
+        <th>
+            Status
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @if (item.UserId == null)
+                {
+                    <p>Available</p>
+                }
+                else
+                {
+                    <p>
+                        Rented by <br />
+                        @item.ApplicationUser.Email
+                    </p>
+                }
+            </td>
+            <td>
+                @if (item.UserId == null)
+                {
+                    @Html.ActionLink("Borrow", "Borrow", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Edit", "Edit", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Delete", "Delete", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+                }
+                else if (item.UserId == User.Identity.GetUserId())
+                {
+                    @Html.ActionLink("Return", "Return", "Books", new { id = item.Id }, new { @class = "btn btn-default" })
+
+                }
+            </td>
+        </tr>
+    }
+
+</table>
